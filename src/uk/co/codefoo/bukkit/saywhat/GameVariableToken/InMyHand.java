@@ -2,6 +2,7 @@ package uk.co.codefoo.bukkit.saywhat.GameVariableToken;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class InMyHand implements TokenExpander
 {
@@ -27,6 +28,14 @@ public class InMyHand implements TokenExpander
 			return "<console>";
 		}
 		ItemStack item = currentPlayer.getItemInHand();
+
+        ItemMeta itemMeta = item.getItemMeta();
+
+        if (itemMeta == null)
+        {
+            return "nothing";
+        }
+
 		String result = 
 			item.getItemMeta().hasDisplayName()
 				? item.getItemMeta().getDisplayName()
