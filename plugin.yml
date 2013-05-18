@@ -1,0 +1,78 @@
+name: SayWhat
+main: uk.co.codefoo.bukkit.saywhat.SayWhat
+version: 0_2_R2
+commands:
+  sw:
+    description: SayWhat playback
+    usage: Usage is /<command> [abbreviation]
+    permission: saywhat.sw
+    permission-message: You don't have access to SayWhat playback
+  swdel:
+    description: SayWhat delete
+    usage: Usage is /<command> [abbreviation]
+    permission: saywhat.swdel
+    permission-message: You don't have access to SayWhat delete
+  swl:
+    description: SayWhat list
+    usage: Usage is /<command> [optional abbreviation]
+    permission: saywhat.swl
+    permission-message: You don't have access to SayWhat list
+  swload: 
+    description: SayWhat load
+    usage: Usage is /<command>
+    permission: saywhat.swload
+    permission-message: You don't have access to SayWhat load
+  swm: 
+    description: SayWhat message
+    usage: Usage is /<command> [abbreviation] [player 1] [player 2] [player n]
+    permission: saywhat.swm
+    permission-message: You don't have access to SayWhat message
+  swqm: 
+    description: SayWhat quick message
+    usage: Usage is /<command> [abbreviation]
+    permission: saywhat.swqm
+    permission-message: You don't have access to SayWhat quick message
+  swr:
+    description: SayWhat record
+    usage: Usage is /<command> [abbreviation] [message sent in place of abbreviation]
+    permission: saywhat.swr
+    permission-message: You don't have access to SayWhat record
+  swsave:
+    description: SayWhat save
+    usage: Usage is /<command>
+    permission: saywhat.swsave
+    permission-message: You don't have access to SayWhat save
+  swt:
+    description: SayWhat token list
+    usage: Usage is /<command> [optional token name]
+    permission: saywhat.swt
+    permission-message: You don't have access to SayWhat token list
+permissions:
+    sw:
+        description: Gives access to SayWhat playback
+        default: op
+    swdel:
+        description: Gives access to SayWhat delete
+        default: op
+    swl:
+        description: Gives access to SayWhat list
+        default: op
+    swload:
+        description: Gives access to SayWhat load
+        default: op
+    swm:
+        description: Gives access to SayWhat message
+        default: op
+    swqm:
+        description: Gives access to SayWhat quick message
+        default: op
+    swr:
+        description: Gives access to SayWhat record
+        default: op
+    swsave:
+        description: Gives access to SayWhat save
+        default: op
+    swt:
+        description: Gives access to SayWhat token list
+        default: op
+    
