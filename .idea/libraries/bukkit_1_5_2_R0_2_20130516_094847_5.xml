@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="bukkit-1.5.2-R0.2-20130516.094847-5">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../bukkit-1.5.2-R0.2-20130516.094847-5.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="http://jd.bukkit.org/dev/apidocs/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../java" />
+    </SOURCES>
+  </library>
+</component>
