@@ -54,6 +54,10 @@ public class TokenExpanders {
         String result = message;
         for (Map.Entry<String, TokenExpander> tokenEntry : tokenExpanderMap.entrySet())
         {
+            if (!message.contains(tokenEntry.getKey()))
+            {
+                continue;
+            }
             result = result.replace(tokenEntry.getKey(), tokenEntry.getValue().getGameVariableValue(currentPlayer)); 
         }
         return result;
