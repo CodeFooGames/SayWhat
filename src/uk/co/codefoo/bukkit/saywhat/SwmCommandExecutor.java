@@ -44,9 +44,15 @@ public class SwmCommandExecutor implements CommandExecutor
         {
             currentPlayer = (Player) sender;
         }
-        
+
         abbreviationValue = sayWhat.getTokenExpanders().expandAllTokens(abbreviationValue, currentPlayer);
-        
+
+        String message = abbreviationValue;
+        if (currentPlayer != null)
+        {
+            message = String.format("<%s: %s>",currentPlayer.getDisplayName(),abbreviationValue);
+        }
+
         HashSet<Player> recipientList = new HashSet<Player>();
         for (int i = 1; i < args.length; i++)
         {
@@ -57,11 +63,22 @@ public class SwmCommandExecutor implements CommandExecutor
                 continue;
             }
             recipientList.add(currentRecipient);
-            currentRecipient.sendMessage(abbreviationValue);
+            currentRecipient.sendMessage(message);
         }
+
+        int recipients = recipientList.size();
+
+        String result = String.format(
+                "[swm sent '%s' to %d player%s]",
+                message,
+                recipients,
+                recipients == 1 ? "" : "s"
+        );
         
         if (currentPlayer != null)
         {
+            currentPlayer.sendMessage(result);
+
             AsyncPlayerChatEvent chatEvent = new AsyncPlayerChatEvent(
                     false
                     ,currentPlayer

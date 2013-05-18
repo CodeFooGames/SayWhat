@@ -1,6 +1,6 @@
 name: SayWhat
 main: uk.co.codefoo.bukkit.saywhat.SayWhat
-version: 0_2_R2
+version: 0_3_R1
 commands:
   sw:
     description: SayWhat playback
