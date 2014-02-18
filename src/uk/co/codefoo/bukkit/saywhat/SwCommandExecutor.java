@@ -6,8 +6,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import uk.co.codefoo.bukkit.util.Logging;
-
 public class SwCommandExecutor implements CommandExecutor
 {
     private SayWhat sayWhat;
@@ -26,26 +24,18 @@ public class SwCommandExecutor implements CommandExecutor
             return false;
         }
 
-        String abbreviationKey = args[0].toLowerCase();
-        String abbreviationValue = sayWhat.getAbbreviations().get(abbreviationKey);
+        Player currentPlayer = sender instanceof Player ? (Player) sender : null;
 
-        if (abbreviationValue==null)
+        String abbreviationKey = args[0].toLowerCase();
+        String expandedMessage = sayWhat.getMessageExpander().getExpandedMessage(abbreviationKey, currentPlayer, false);
+
+        if (currentPlayer != null)
         {
-            String result = sayWhat.getAbbreviations().getAbbreviationNotFoundText(abbreviationKey);
-            Logging.logReply(SayWhat.PluginId, result);
+            currentPlayer.chat(expandedMessage);
             return true;
         }
-        
-        if (sender instanceof Player)
-        {
-            Player currentPlayer = (Player) sender;
-            abbreviationValue = sayWhat.getTokenExpanders().expandAllTokens(abbreviationValue, currentPlayer);
-            currentPlayer.chat(abbreviationValue);
-            return true;
-        }
-        
-        abbreviationValue = sayWhat.getTokenExpanders().expandAllTokens(abbreviationValue, null);
-        Bukkit.broadcastMessage(abbreviationValue);
+
+        Bukkit.broadcastMessage(expandedMessage);
         return true;
     }
 }

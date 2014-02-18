@@ -21,39 +21,43 @@ public class SwmCommandExecutor implements CommandExecutor
     }
     
     @Override
-    public boolean onCommand(CommandSender sender, Command command,
-            String label, String[] args)
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
     {
         if (args.length < 2)
         {
             return false;
         }
 
+        Player currentPlayer = sender instanceof Player ? (Player) sender : null;
+
         String abbreviationKey = args[0].toLowerCase();
-        String abbreviationValue = sayWhat.getAbbreviations().get(abbreviationKey);
+        String expandedMessage = sayWhat.getMessageExpander().getExpandedMessage(abbreviationKey, currentPlayer, true);
 
-        if (abbreviationValue==null)
+        HashSet<Player> recipientList = getRecipientList(currentPlayer, args);
+
+        sendMessageToRecipients(recipientList, expandedMessage);
+
+        sendMessageToSubscribedPlugins(currentPlayer, expandedMessage, recipientList);
+
+        sayWhat.saveQuickMessageRecipientListForPlayer(currentPlayer, recipientList);
+
+        feedbackResultToCommandSender(currentPlayer, expandedMessage, recipientList);
+
+        return true;
+    }
+
+    private HashSet<Player> getRecipientList(Player currentPlayer, String[] args)
+    {
+        HashSet<Player> recipientList;
+
+        int lengthOfArgumentsWhenNoRecipientListGiven = 1;
+        if (args.length == lengthOfArgumentsWhenNoRecipientListGiven)
         {
-            String result = sayWhat.getAbbreviations().getAbbreviationNotFoundText(abbreviationKey);
-            Logging.logReply(SayWhat.PluginId, result);
-            return true;
+            recipientList = sayWhat.getQuickMessageRecipientListForPlayer(currentPlayer);
+            return recipientList;
         }
 
-        Player currentPlayer = null;
-        if (sender instanceof Player)
-        {
-            currentPlayer = (Player) sender;
-        }
-
-        abbreviationValue = sayWhat.getTokenExpanders().expandAllTokens(abbreviationValue, currentPlayer);
-
-        String message = abbreviationValue;
-        if (currentPlayer != null)
-        {
-            message = String.format("<%s: %s>",currentPlayer.getDisplayName(),abbreviationValue);
-        }
-
-        HashSet<Player> recipientList = new HashSet<Player>();
+        recipientList = new HashSet<Player>();
         for (int i = 1; i < args.length; i++)
         {
             Player currentRecipient = Bukkit.getPlayer(args[i]);
@@ -63,34 +67,49 @@ public class SwmCommandExecutor implements CommandExecutor
                 continue;
             }
             recipientList.add(currentRecipient);
-            currentRecipient.sendMessage(message);
         }
+        return recipientList;
+    }
 
+    private void sendMessageToRecipients(HashSet<Player> recipientList, String expandedMessage)
+    {
+        for (Player recipient : recipientList)
+        {
+            recipient.sendMessage(expandedMessage);
+        }
+    }
+
+    private void sendMessageToSubscribedPlugins(
+            Player currentPlayer, String expandedMessage, HashSet<Player> recipientList)
+    {
+        if (currentPlayer == null)
+        {
+            return;
+        }
+        AsyncPlayerChatEvent chatEvent = new AsyncPlayerChatEvent(
+                false
+                ,currentPlayer
+                ,expandedMessage
+                ,recipientList);
+
+        Bukkit.getServer().getPluginManager().callEvent(chatEvent);
+    }
+
+    private void storePlayerRecipientListForCommandSender(Player currentPlayer, HashSet<Player> recipientList)
+    {
+    }
+
+    private void feedbackResultToCommandSender(
+            Player currentPlayer, String expandedMessage, HashSet<Player> recipientList)
+    {
+        // Feedback result to command sender
         int recipients = recipientList.size();
-
-        String result = String.format(
+        String resultMessage = String.format(
                 "[swm sent '%s' to %d player%s]",
-                message,
+                expandedMessage,
                 recipients,
                 recipients == 1 ? "" : "s"
         );
-        
-        if (currentPlayer != null)
-        {
-            currentPlayer.sendMessage(result);
-
-            AsyncPlayerChatEvent chatEvent = new AsyncPlayerChatEvent(
-                    false
-                    ,currentPlayer
-                    ,abbreviationValue
-                    ,recipientList);
-            
-            Bukkit.getServer().getPluginManager().callEvent(chatEvent);
-            
-            return true;
-        }
-
-        Bukkit.broadcastMessage(abbreviationValue);
-        return true;
+        Logging.logReply(SayWhat.PluginId, resultMessage, currentPlayer);
     }
 }

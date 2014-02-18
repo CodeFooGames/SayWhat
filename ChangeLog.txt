@@ -1,0 +1,24 @@
+2013-06-25
+Added 'plugins' variable (token expander).
+Moved common code for expanding messages and tokens to MessageExpander. Refactored sw and swm to use MessageExpander.
+
+2013-05-18
+First release of swm private message command
+swm sends an abbreviation to a list of players.
+For example, "swm help player1 player2", plays back the "help" abbreviation as a private message
+to "player1" and "player2".
+
+2013-05-18
+Bug fixes
+* Fixed a bug where the InMyHand token expander crashed when a player had nothing in their hand.
+* Fixed a bug where the TokenExpanders would call every TokenExpander, even those tokens not in a message.
+
+2013-05-18
+SayWhat now uses GPL3
+Find SayWhat on GitHub at https://github.com/CodeFooGames/SayWhat
+ 
+2013-01-22
+Added support for variables
+Variables let you put server and player information into abbreviations.
+For example, using the "swr" command to record: "swr help I need help! At %%myloc!"
+can use the "sw help" command to playback "I need help! At  x:-135, z:252, y:68".

@@ -12,9 +12,10 @@ public class TokenExpanders {
 	{
 		tokenExpanderMap = new ConcurrentSkipListMap<String, TokenExpander>();
 
+        add("InMyHand");
+        add("MOTD");
 		add("MyLocation");
-		add("InMyHand");
-		add("MOTD");
+        add("Plugins");
 		add("ServerName");
 	}
 

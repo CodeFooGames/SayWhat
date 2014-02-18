@@ -2,27 +2,37 @@ package uk.co.codefoo.bukkit.saywhat;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import uk.co.codefoo.bukkit.saywhat.Abbreviation.Abbreviations;
 import uk.co.codefoo.bukkit.saywhat.GameVariableToken.TokenExpanders;
+import uk.co.codefoo.bukkit.saywhat.Message.MessageExpander;
 import uk.co.codefoo.bukkit.util.Logging;
+
+import java.util.HashSet;
 
 public class SayWhat extends JavaPlugin {
 	public static final String PluginId = "SayWhat";
 
-	private Abbreviations abbreviations;
+    private Abbreviations abbreviations;
     public Abbreviations getAbbreviations()
-	{
-	    return abbreviations;
-	}
-	
+    {
+        return abbreviations;
+    }
+
     private TokenExpanders tokenExpanders;
     public TokenExpanders getTokenExpanders()
     {
         return tokenExpanders;
     }
 
+	private MessageExpander messageExpander;
+    public MessageExpander getMessageExpander()
+	{
+	    return messageExpander;
+	}
+	
 	@Override
 	public void onEnable()
 	{
@@ -42,8 +52,9 @@ public class SayWhat extends JavaPlugin {
         getCommand("swsave").setExecutor(new SwsaveCommandExecutor(this));
         getCommand("swt").setExecutor(new SwtCommandExecutor(this));		
 
-        tokenExpanders = (new TokenExpanders());
-        abbreviations = (new Abbreviations());
+        abbreviations = new Abbreviations();
+        tokenExpanders = new TokenExpanders();
+        messageExpander = new MessageExpander(abbreviations, tokenExpanders);
         
         loadFromConfig();
 	}
@@ -67,25 +78,30 @@ public class SayWhat extends JavaPlugin {
 	{
 		Logging.logReply(PluginId, "Loading config.");
 
-		boolean abbreviationsResult = abbreviations.loadFromConfig(getConfig());
-
-		return abbreviationsResult;
+        return abbreviations.loadFromConfig(getConfig());
 	}
 	
 	public boolean saveToConfig()
 	{
 		Logging.logReply(PluginId, "Saving config.");
 
-		boolean abbreviationMapResult = abbreviations.saveToConfig(getConfig());
+		boolean overallResult = abbreviations.saveToConfig(getConfig());
 
-		if (!abbreviationMapResult)
+		if (overallResult)
 		{
-			return false;
+            this.saveConfig();
 		}
 
-		this.saveConfig();
-
-		return true;
+		return overallResult;
 	}
 
+    public HashSet<Player>  getQuickMessageRecipientListForPlayer(Player currentPlayer)
+    {
+        return new HashSet<Player>();
+    }
+
+    public boolean saveQuickMessageRecipientListForPlayer(Player currentPlayer, HashSet<Player> recipientList)
+    {
+        return false;
+    }
 }
